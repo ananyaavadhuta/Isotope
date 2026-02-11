@@ -1,3 +1,4 @@
+
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 
 export const Hero = () => {
@@ -33,11 +34,11 @@ export const Hero = () => {
                 </div>
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                    <button className="px-8 py-4 bg-isotope-teal text-black font-semibold rounded-lg hover:bg-isotope-teal/90 transition-all flex items-center gap-2 group">
+                    <button className="px-8 py-4 bg-isotope-teal text-black font-bold rounded-lg hover:bg-isotope-teal/90 hover:scale-105 transition-all duration-300 flex items-center gap-2 group shadow-[0_0_20px_rgba(0,240,255,0.3)]">
                         Start Matching
                         <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </button>
-                    <button className="px-8 py-4 bg-transparent border border-white/10 text-white font-semibold rounded-lg hover:bg-white/5 transition-all">
+                    <button className="px-8 py-4 bg-isotope-orange text-black font-bold rounded-lg hover:bg-isotope-orange/90 hover:scale-105 transition-all duration-300 shadow-[0_0_20px_rgba(255,176,0,0.3)]">
                         Create Account
                     </button>
                 </div>

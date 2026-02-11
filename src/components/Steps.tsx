@@ -1,3 +1,4 @@
+
 export const Steps = () => {
     const steps = [
         {
@@ -37,11 +38,11 @@ export const Steps = () => {
 
                 <div className="grid md:grid-cols-4 gap-6">
                     {steps.map((step, index) => (
-                        <div key={index} className="relative p-6 rounded-2xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] transition-colors">
-                            <div className="text-5xl font-bold text-white/5 mb-6 opacity-30 select-none">
+                        <div key={index} className="relative p-6 rounded-2xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] hover:border-isotope-teal/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] group">
+                            <div className="text-5xl font-bold text-white/5 mb-6 opacity-30 select-none transition-all duration-300 group-hover:opacity-10 group-hover:text-isotope-teal">
                                 {step.number}
                             </div>
-                            <div className="absolute top-6 left-6 text-isotope-teal text-xl font-bold opacity-0 hover:opacity-100 transition-opacity">
+                            <div className="absolute top-6 left-6 text-isotope-teal text-xl font-bold opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
                                 {step.number}
                             </div>
                             <h3 className="text-lg font-bold mb-3 text-white">{step.title}</h3>

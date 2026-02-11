@@ -1,3 +1,4 @@
+
 import { Zap, Heart, MessageSquare } from "lucide-react";
 
 export const Layers = () => {
@@ -9,8 +10,8 @@ export const Layers = () => {
                 </div>
 
                 <div className="grid md:grid-cols-3 gap-8">
-                    <div className="p-8 rounded-2xl border border-white/10 bg-white/5">
-                        <div className="w-12 h-12 bg-isotope-teal/10 rounded-lg flex items-center justify-center mb-6 text-isotope-teal">
+                    <div className="p-8 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 hover:border-isotope-teal/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] group">
+                        <div className="w-12 h-12 bg-isotope-teal/10 rounded-lg flex items-center justify-center mb-6 text-isotope-teal group-hover:scale-110 group-hover:bg-isotope-teal/20 transition-all duration-300">
                             <Zap className="w-6 h-6" />
                         </div>
                         <h3 className="text-xl font-bold mb-3 text-white">Technical Sync</h3>
@@ -19,8 +20,8 @@ export const Layers = () => {
                         </p>
                     </div>
 
-                    <div className="p-8 rounded-2xl border border-white/10 bg-white/5">
-                        <div className="w-12 h-12 bg-isotope-teal/10 rounded-lg flex items-center justify-center mb-6 text-isotope-teal">
+                    <div className="p-8 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 hover:border-isotope-teal/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] group">
+                        <div className="w-12 h-12 bg-isotope-teal/10 rounded-lg flex items-center justify-center mb-6 text-isotope-teal group-hover:scale-110 group-hover:bg-isotope-teal/20 transition-all duration-300">
                             <Heart className="w-6 h-6" />
                         </div>
                         <h3 className="text-xl font-bold mb-3 text-white">The "Vibe" Factor</h3>
@@ -29,8 +30,8 @@ export const Layers = () => {
                         </p>
                     </div>
 
-                    <div className="p-8 rounded-2xl border border-white/10 bg-white/5">
-                        <div className="w-12 h-12 bg-isotope-teal/10 rounded-lg flex items-center justify-center mb-6 text-isotope-teal">
+                    <div className="p-8 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 hover:border-isotope-teal/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] group">
+                        <div className="w-12 h-12 bg-isotope-teal/10 rounded-lg flex items-center justify-center mb-6 text-isotope-teal group-hover:scale-110 group-hover:bg-isotope-teal/20 transition-all duration-300">
                             <MessageSquare className="w-6 h-6" />
                         </div>
                         <h3 className="text-xl font-bold mb-3 text-white">Communication Layer</h3>

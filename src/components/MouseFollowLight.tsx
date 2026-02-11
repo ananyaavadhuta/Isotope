@@ -1,42 +1,45 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
-export const MouseFollowLight = () => {
-    const divRef = useRef<HTMLDivElement>(null);
+const MouseFollowLight = () => {
     const [position, setPosition] = useState({ x: 0, y: 0 });
-    const [opacity, setOpacity] = useState(0);
+    const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
         const handleMouseMove = (e: MouseEvent) => {
-            if (!divRef.current) return;
-
-            const div = divRef.current;
-            const rect = div.getBoundingClientRect();
-
-            setPosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
-            setOpacity(1);
+            setPosition({ x: e.clientX, y: e.clientY });
+            setIsVisible(true);
         };
 
         const handleMouseLeave = () => {
-            setOpacity(0);
+            setIsVisible(false);
         };
 
-        document.addEventListener("mousemove", handleMouseMove);
-        document.addEventListener("mouseleave", handleMouseLeave);
+        window.addEventListener("mousemove", handleMouseMove);
+        document.body.addEventListener("mouseleave", handleMouseLeave);
 
         return () => {
-            document.removeEventListener("mousemove", handleMouseMove);
-            document.removeEventListener("mouseleave", handleMouseLeave);
+            window.removeEventListener("mousemove", handleMouseMove);
+            document.body.removeEventListener("mouseleave", handleMouseLeave);
         };
     }, []);
 
     return (
         <div
-            ref={divRef}
-            className="pointer-events-none fixed inset-0 z-30 transition-opacity duration-300"
-            style={{
-                opacity,
-                background: `radial-gradient(600px circle at ${position.x}px ${position.y}px, rgba(0, 240, 255, 0.06), transparent 40%)`,
-            }}
-        />
+            className="pointer-events-none fixed inset-0 z-0 transition-opacity duration-300"
+            style={{ opacity: isVisible ? 1 : 0 }}
+        >
+            <div
+                className="absolute h-[600px] w-[600px] rounded-full"
+                style={{
+                    left: position.x - 300,
+                    top: position.y - 300,
+                    background:
+                        "radial-gradient(circle, hsl(var(--primary) / 0.08) 0%, hsl(var(--primary) / 0.03) 30%, transparent 70%)",
+                    transition: "left 0.15s ease-out, top 0.15s ease-out",
+                }}
+            />
+        </div>
     );
 };
+
+export default MouseFollowLight;
