@@ -1,3 +1,4 @@
+
 import { useEffect, useRef } from "react";
 
 export const IronFilingsEffect = () => {
@@ -12,6 +13,7 @@ export const IronFilingsEffect = () => {
 
         let width = window.innerWidth;
         let height = window.innerHeight;
+        let animationFrameId: number;
 
         canvas.width = width;
         canvas.height = height;
@@ -48,7 +50,7 @@ export const IronFilingsEffect = () => {
                 ctx.fill();
             });
 
-            requestAnimationFrame(animate);
+            animationFrameId = requestAnimationFrame(animate);
         };
 
         const handleResize = () => {
@@ -63,8 +65,9 @@ export const IronFilingsEffect = () => {
 
         return () => {
             window.removeEventListener("resize", handleResize);
+            cancelAnimationFrame(animationFrameId);
         };
     }, []);
 
-    return <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none z-0 opacity-40" />;
+    return <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none z-0 opacity-40 bg-transparent" />;
 };
