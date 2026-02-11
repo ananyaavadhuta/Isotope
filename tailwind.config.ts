@@ -68,6 +68,7 @@ export default {
           dark: "#050505", // Deep black
           gray: "#1A1A1A", // Card bg
           green: "#00FF94", // Another accent
+          orange: "#FFB000", // Bright orange/gold
         }
       },
       borderRadius: {
