@@ -6,10 +6,13 @@ import { Features } from "../components/Features";
 import { Steps } from "../components/Steps";
 import { Layers } from "../components/Layers";
 import { Footer } from "../components/Footer";
+import { SuccessFeatures } from "../components/SuccessFeatures";
+import { IronFilingsEffect } from "../components/IronFilingsEffect";
 
 const Index = () => {
     return (
-        <div className="min-h-screen bg-isotope-dark font-sans text-foreground selection:bg-isotope-teal selection:text-isotope-dark overflow-x-hidden">
+        <div className="min-h-screen bg-isotope-dark font-sans text-foreground selection:bg-isotope-teal selection:text-isotope-dark overflow-x-hidden relative">
+            <IronFilingsEffect />
             <MouseFollowLight />
             <Header />
             <Hero />
@@ -17,8 +20,9 @@ const Index = () => {
             <Features />
             <Layers />
             <Steps />
+            <SuccessFeatures />
             {/* Ready to Find Your Perfect Match CTA */}
-            <section className="py-24 text-center">
+            <section className="py-24 text-center relative z-10">
                 <h2 className="text-3xl md:text-5xl font-bold mb-6">
                     Ready to Find Your <span className="text-gradient">Perfect Match</span>?
                 </h2>
