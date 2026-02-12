@@ -1,13 +1,8 @@
-/** @type {import('tailwindcss').Config} */
+import type { Config } from "tailwindcss";
+
 export default {
     darkMode: ["class"],
-    content: [
-        "./pages/**/*.{ts,tsx}",
-        "./components/**/*.{ts,tsx}",
-        "./app/**/*.{ts,tsx}",
-        "./src/**/*.{ts,tsx}",
-        "./index.html",
-    ],
+    content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
     prefix: "",
     theme: {
         container: {
@@ -62,14 +57,6 @@ export default {
                     border: "hsl(var(--sidebar-border))",
                     ring: "hsl(var(--sidebar-ring))",
                 },
-                // Custom isotope colors
-                isotope: {
-                    teal: "#00F0FF", // Bright teal/cyan
-                    dark: "#050505", // Deep black
-                    gray: "#1A1A1A", // Card bg
-                    green: "#00FF94", // Another accent
-                    orange: "#FFB000", // Bright orange/gold
-                }
             },
             borderRadius: {
                 lg: "var(--radius)",
@@ -85,23 +72,27 @@ export default {
                     from: { height: "var(--radix-accordion-content-height)" },
                     to: { height: "0" },
                 },
-                spotlight: {
-                    "0%": {
-                        opacity: "0",
-                        transform: "translate(-72%, -62%) scale(0.5)",
-                    },
-                    "100%": {
-                        opacity: "1",
-                        transform: "translate(-50%,-40%) scale(1)",
-                    },
+                "pulse-glow": {
+                    "0%, 100%": { opacity: "0.4" },
+                    "50%": { opacity: "1" },
+                },
+                "slide-up": {
+                    from: { opacity: "0", transform: "translateY(20px)" },
+                    to: { opacity: "1", transform: "translateY(0)" },
+                },
+                "fade-in": {
+                    from: { opacity: "0" },
+                    to: { opacity: "1" },
                 },
             },
             animation: {
                 "accordion-down": "accordion-down 0.2s ease-out",
                 "accordion-up": "accordion-up 0.2s ease-out",
-                spotlight: "spotlight 2s ease .75s 1 forwards",
+                "pulse-glow": "pulse-glow 3s ease-in-out infinite",
+                "slide-up": "slide-up 0.6s ease-out",
+                "fade-in": "fade-in 0.4s ease-out",
             },
         },
     },
     plugins: [require("tailwindcss-animate")],
-}
+} satisfies Config;

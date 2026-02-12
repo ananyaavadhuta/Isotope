@@ -1,39 +1,83 @@
-import { Zap, Building2, Search, IndianRupee, Megaphone, User } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Zap, User, LayoutDashboard, Building2, Search, IndianRupee, Megaphone } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+import type { User as SupabaseUser } from "@supabase/supabase-js";
 
-export const Header = () => {
+const Header = () => {
+    const location = useLocation();
+    const [user, setUser] = useState<SupabaseUser | null>(null);
+
+    useEffect(() => {
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+            setUser(session?.user ?? null);
+        });
+
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            setUser(session?.user ?? null);
+        });
+
+        return () => subscription.unsubscribe();
+    }, []);
+
+    const isActive = (path: string) => location.pathname === path;
+
     return (
-        <nav className="fixed top-0 w-full z-50 bg-isotope-dark/80 backdrop-blur-md border-b border-white/5">
-            <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                    <div className="bg-isotope-teal p-1.5 rounded-full">
-                        <Zap className="w-5 h-5 text-black fill-current" />
+        <header className="fixed left-0 right-0 top-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl">
+            <div className="container mx-auto flex h-16 items-center justify-between px-6">
+                <Link to="/" className="flex items-center gap-2">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
+                        <Zap className="h-4 w-4 text-primary-foreground" />
                     </div>
-                    <span className="text-xl font-bold tracking-tight text-white">Isotope</span>
-                </div>
+                    <span className="text-lg font-bold tracking-tight">
+                        Iso<span className="text-destructive-foreground">tope</span>
+                    </span>
+                </Link>
 
-                <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-300">
-                    <a href="#" className="flex items-center gap-2 hover:text-isotope-teal transition-colors">
-                        <Building2 className="w-4 h-4" />
-                        <span>For Employers</span>
-                    </a>
-                    <a href="#" className="flex items-center gap-2 hover:text-isotope-teal transition-colors">
-                        <Search className="w-4 h-4" />
-                        <span>For Job Seekers</span>
-                    </a>
-                    <a href="#" className="flex items-center gap-2 hover:text-isotope-teal transition-colors">
-                        <IndianRupee className="w-4 h-4" />
-                        <span>Pricing</span>
-                    </a>
-                    <a href="#" className="flex items-center gap-2 hover:text-isotope-teal transition-colors">
-                        <Megaphone className="w-4 h-4" />
-                        <span>Ambassadors</span>
-                    </a>
-                    <a href="#" className="flex items-center gap-2 hover:text-isotope-teal transition-colors">
-                        <User className="w-4 h-4" />
-                        <span>Account</span>
-                    </a>
-                </div>
+                <nav className="flex items-center gap-1">
+                    <Link to="/for-employers">
+                        <Button variant={isActive("/for-employers") ? "secondary" : "ghost"} size="sm" className="gap-2 text-sm">
+                            <Building2 className="h-4 w-4" />
+                            For Employers
+                        </Button>
+                    </Link>
+                    <Link to="/for-job-seekers">
+                        <Button variant={isActive("/for-job-seekers") ? "secondary" : "ghost"} size="sm" className="gap-2 text-sm">
+                            <Search className="h-4 w-4" />
+                            For Job Seekers
+                        </Button>
+                    </Link>
+                    <Link to="/pricing">
+                        <Button variant={isActive("/pricing") ? "secondary" : "ghost"} size="sm" className="gap-2 text-sm">
+                            <IndianRupee className="h-4 w-4" />
+                            Pricing
+                        </Button>
+                    </Link>
+                    <Link to="/for-ambassadors">
+                        <Button variant={isActive("/for-ambassadors") ? "secondary" : "ghost"} size="sm" className="gap-2 text-sm">
+                            <Megaphone className="h-4 w-4" />
+                            Ambassadors
+                        </Button>
+                    </Link>
+                    {user && (
+                        <Link to="/matchmaking">
+                            <Button variant={isActive("/matchmaking") ? "secondary" : "ghost"} size="sm" className="gap-2 text-sm">
+                                <LayoutDashboard className="h-4 w-4" />
+                                Matchmaking
+                            </Button>
+                        </Link>
+                    )}
+                    <Link to={user ? "/profile" : "/auth"}>
+                        <Button variant={isActive("/auth") || isActive("/profile") ? "secondary" : "ghost"} size="sm" className="gap-2 text-sm">
+                            <User className="h-4 w-4" />
+                            {user ? "Profile" : "Account"}
+                        </Button>
+                    </Link>
+                </nav>
             </div>
-        </nav>
+        </header>
     );
 };
+
+export default Header;

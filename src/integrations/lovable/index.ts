@@ -1,5 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
-import Provider  from "@supabase/supabase-js";
+import Provider from "@supabase/supabase-js";
 
 export const lovable = {
     auth: {
