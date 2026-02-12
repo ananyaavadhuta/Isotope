@@ -1,4 +1,4 @@
-import { MouseFollowLight } from "../components/MouseFollowLight";
+import MouseFollowLight from "../components/MouseFollowLight";
 import { Header } from "../components/Header";
 import { Hero } from "../components/Hero";
 import { Stats } from "../components/Stats";
