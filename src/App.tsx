@@ -13,6 +13,7 @@ import ForJobSeekers from "./pages/ForJobSeekers";
 import ForAmbassadors from "./pages/ForAmbassadors";
 import Pricing from "./pages/Pricing";
 import Profile from "./pages/Profile";
+import PostJob from "./pages/PostJob";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,6 +30,7 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/matchmaking" element={<Matchmaking />} />
             <Route path="/jobs" element={<Jobs />} />
+            <Route path="/post-job" element={<PostJob />} />
             <Route path="/for-employers" element={<ForEmployers />} />
             <Route path="/for-job-seekers" element={<ForJobSeekers />} />
             <Route path="/for-ambassadors" element={<ForAmbassadors />} />

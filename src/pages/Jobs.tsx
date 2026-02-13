@@ -1,57 +1,92 @@
-import { Briefcase, Rocket, Clock, ArrowRight } from "lucide-react";
+import { Briefcase, Rocket, Clock, ArrowRight, Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Header from "@/components/Header";
 import GradientBackground from "@/components/GradientBackground";
 import IronFilingsEffect from "@/components/IronFilingsEffect";
+import JobList from "@/components/JobList";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 const Jobs = () => {
+    const [userRole, setUserRole] = useState<string | null>(null);
+
+    useEffect(() => {
+        const getSession = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session?.user) {
+                setUserRole(session.user.user_metadata?.role || "seeker");
+            }
+        };
+        getSession();
+    }, []);
+
     return (
         <div className="relative min-h-screen bg-background">
             <GradientBackground />
             <IronFilingsEffect />
             <Header />
 
-            <div className="container mx-auto max-w-4xl px-6 pb-20 pt-24">
-                <div className="flex flex-col items-center justify-center py-20 text-center">
-                    <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-2xl border border-primary/20 bg-primary/10">
-                        <Rocket className="h-10 w-10 text-primary" />
+            <div className="container mx-auto max-w-5xl px-6 pb-20 pt-24">
+                <div className="mb-10 flex flex-col justify-between gap-4 md:flex-row md:items-end">
+                    <div>
+                        <h1 className="text-3xl font-bold tracking-tight md:text-4xl">
+                            Available Opportunities
+                        </h1>
+                        <p className="mt-2 text-muted-foreground text-lg">
+                            Find projects and roles that match your vibe and skills.
+                        </p>
                     </div>
-                    <h1 className="mb-4 text-3xl font-bold tracking-tight md:text-4xl">
-                        Pre-Launch Phase
-                    </h1>
-                    <p className="mx-auto mb-6 max-w-lg text-lg text-muted-foreground">
-                        We're building something incredible. Job listings and talent requests will be available
-                        once Isotope officially launches. Stay tuned!
-                    </p>
-                    <div className="mb-10 flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-5 py-2 text-sm text-accent">
-                        <Clock className="h-4 w-4" />
-                        Coming Soon
+                    {userRole === "employer" && (
+                        <Link to="/post-job">
+                            <Button className="gap-2 glow-primary">
+                                <Plus className="h-4 w-4" />
+                                Post a New Job
+                            </Button>
+                        </Link>
+                    )}
+                </div>
+
+                <div className="grid gap-8 lg:grid-cols-[1fr_300px]">
+                    <div className="space-y-6">
+                        <JobList />
                     </div>
 
-                    <div className="grid w-full max-w-md gap-4">
-                        <div className="rounded-xl border border-border bg-card/50 p-6 text-left backdrop-blur-sm">
-                            <Briefcase className="mb-3 h-6 w-6 text-primary" />
-                            <h3 className="mb-1 font-semibold">For Employers</h3>
+                    <div className="space-y-6">
+                        {/* Phase Info */}
+                        <div className="rounded-xl border border-accent/20 bg-accent/5 p-6 backdrop-blur-sm">
+                            <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-accent/20">
+                                <Rocket className="h-5 w-5 text-accent" />
+                            </div>
+                            <h3 className="mb-2 font-bold">Pre-Launch Phase</h3>
                             <p className="text-sm text-muted-foreground">
-                                Post job listings and discover matched candidates from our young talent pool.
+                                We're currently in active beta. New listings are being added daily by our partner companies.
                             </p>
+                            <div className="mt-4 flex items-center gap-2 text-xs font-medium text-accent">
+                                <Clock className="h-3 w-3" />
+                                Launching Officially Soon
+                            </div>
                         </div>
-                        <div className="rounded-xl border border-border bg-card/50 p-6 text-left backdrop-blur-sm">
-                            <Briefcase className="mb-3 h-6 w-6 text-accent" />
-                            <h3 className="mb-1 font-semibold">For Job Seekers</h3>
-                            <p className="text-sm text-muted-foreground">
-                                Browse curated opportunities and get AI-powered job recommendations.
-                            </p>
+
+                        {/* Quick Tips */}
+                        <div className="rounded-xl border border-border bg-card/50 p-6 backdrop-blur-sm">
+                            <h3 className="mb-4 font-bold">Tips for Success</h3>
+                            <ul className="space-y-3 text-sm text-muted-foreground">
+                                <li className="flex gap-2">
+                                    <div className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                                    Complete your profile to 100%
+                                </li>
+                                <li className="flex gap-2">
+                                    <div className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                                    Add projects to your portfolio
+                                </li>
+                                <li className="flex gap-2">
+                                    <div className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                                    Check your match score before applying
+                                </li>
+                            </ul>
                         </div>
                     </div>
-
-                    <Link to="/auth" className="mt-8">
-                        <Button size="lg" className="gap-2 glow-primary">
-                            Create Account to Get Notified
-                            <ArrowRight className="h-4 w-4" />
-                        </Button>
-                    </Link>
                 </div>
             </div>
         </div>

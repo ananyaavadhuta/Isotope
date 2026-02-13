@@ -29,6 +29,8 @@ const Profile = () => {
     const [skills, setSkills] = useState("");
     const [experience, setExperience] = useState("");
     const [avatarUrl, setAvatarUrl] = useState("");
+    const [companyName, setCompanyName] = useState("");
+    const [industry, setIndustry] = useState("");
 
     const [role, setRole] = useState<"seeker" | "employer">("seeker");
 
@@ -40,14 +42,33 @@ const Profile = () => {
                 return;
             }
             setUser(session.user);
-            setFullName(session.user.user_metadata?.full_name || "");
-            setAvatarUrl(session.user.user_metadata?.avatar_url || "");
-            setRole(session.user.user_metadata?.role || "seeker");
-            setPhone(session.user.user_metadata?.phone || "");
-            setLocation(session.user.user_metadata?.location || "");
-            setBio(session.user.user_metadata?.bio || "");
-            setSkills(session.user.user_metadata?.skills || "");
-            setExperience(session.user.user_metadata?.experience || "");
+
+            // Fetch profile data from public.profiles
+            const { data: profile, error } = await supabase
+                .from("profiles")
+                .select("*")
+                .eq("id", session.user.id)
+                .returns<any>()
+                .single();
+
+            if (profile) {
+                const p = profile as any;
+                setFullName(p.full_name || "");
+                setAvatarUrl(p.avatar_url || "");
+                setRole(p.role || "seeker");
+                setBio(p.bio || "");
+                setPhone(p.phone_number || "");
+                setLocation(p.location || "");
+                setSkills(p.skills || "");
+                setExperience(p.experience || "");
+                setCompanyName(p.company_name || "");
+                setIndustry(p.industry || "");
+            } else {
+                // Fallback to metadata if profile doesn't exist yet
+                setFullName(session.user.user_metadata?.full_name || "");
+                setAvatarUrl(session.user.user_metadata?.avatar_url || "");
+                setRole(session.user.user_metadata?.role || "seeker");
+            }
             setLoading(false);
         };
 
@@ -65,31 +86,47 @@ const Profile = () => {
     }, [navigate]);
 
     const handleSave = async () => {
+        if (!user) return;
         setSaving(true);
         try {
-            const { error } = await supabase.auth.updateUser({
+            // Update auth metadata
+            const { error: authError } = await supabase.auth.updateUser({
                 data: {
                     full_name: fullName,
-                    phone,
-                    location,
-                    bio,
-                    skills,
-                    experience,
-                    avatar_url: avatarUrl,
                     role
                 }
             });
 
-            if (error) throw error;
+            if (authError) throw authError;
+
+            // Update public.profiles table
+            const { error: profileError } = await supabase
+                .from("profiles")
+                .upsert({
+                    id: user.id,
+                    full_name: fullName,
+                    avatar_url: avatarUrl,
+                    role,
+                    bio,
+                    phone_number: phone,
+                    location,
+                    skills,
+                    experience,
+                    company_name: companyName,
+                    industry,
+                    updated_at: new Date().toISOString()
+                } as any);
+
+            if (profileError) throw profileError;
 
             toast({
                 title: "Profile updated",
-                description: "Your changes have been saved successfully.",
+                description: "Your changes have been saved successfully to the database.",
             });
-        } catch (error) {
+        } catch (error: any) {
             toast({
                 title: "Error",
-                description: "Failed to update profile. Please try again.",
+                description: error.message || "Failed to update profile. Please try again.",
                 variant: "destructive"
             });
         } finally {
@@ -157,7 +194,31 @@ const Profile = () => {
                                 </span>
                             )}
                             <button
-                                onClick={() => setRole(role === "seeker" ? "employer" : "seeker")}
+                                onClick={async () => {
+                                    const newRole = role === "seeker" ? "employer" : "seeker";
+                                    setRole(newRole);
+
+                                    // Proactively update in DB
+                                    if (user) {
+                                        const { error } = await supabase
+                                            .from("profiles")
+                                            .update({ role: newRole } as any)
+                                            .eq("id", user.id);
+
+                                        if (error) {
+                                            toast({
+                                                title: "Error switching role",
+                                                description: error.message,
+                                                variant: "destructive"
+                                            });
+                                        } else {
+                                            toast({
+                                                title: "Role updated",
+                                                description: `You are now a ${newRole === "employer" ? "Hirer" : "Seeker"}.`,
+                                            });
+                                        }
+                                    }
+                                }}
                                 className="flex items-center gap-1 rounded-full border border-border px-3 py-1 text-xs text-muted-foreground transition-colors hover:bg-muted"
                             >
                                 <ArrowLeftRight className="h-3 w-3" />
@@ -289,6 +350,8 @@ const Profile = () => {
                                 </Label>
                                 <Input
                                     id="company"
+                                    value={companyName}
+                                    onChange={(e) => setCompanyName(e.target.value)}
                                     placeholder="Your Company Pvt. Ltd."
                                     className="mt-1.5 bg-muted/50"
                                 />
@@ -299,6 +362,8 @@ const Profile = () => {
                                 </Label>
                                 <Input
                                     id="industry"
+                                    value={industry}
+                                    onChange={(e) => setIndustry(e.target.value)}
                                     placeholder="Technology, Finance, Healthcare..."
                                     className="mt-1.5 bg-muted/50"
                                 />

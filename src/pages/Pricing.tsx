@@ -5,6 +5,9 @@ import Header from "@/components/Header";
 import GradientBackground from "@/components/GradientBackground";
 import IronFilingsEffect from "@/components/IronFilingsEffect";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+
 const employerFeatures = ["Unlimited candidate matching", "AI-powered compatibility scores", "Direct messaging with candidates", "Analytics dashboard", "Priority support", "Featured company listing", "Access to premium talent pool", "Interview scheduling tools"];
 const seekerFeatures = ["AI-powered job recommendations", "Unlimited job applications", "Profile visibility boost", "Work style analysis", "Resume review feedback", "Interview preparation resources", "Salary benchmarking data", "Priority application status"];
 const valueProps = [{
@@ -24,6 +27,7 @@ const valueProps = [{
     title: "Young Adult Focus",
     description: "Tailored specifically for candidates aged 16-25. Find roles designed for fresh talent, not those requiring decades of experience."
 }];
+
 const Pricing = () => {
     return <div className="relative min-h-screen bg-background">
         <GradientBackground />
@@ -49,61 +53,58 @@ const Pricing = () => {
             <div className="mb-20 overflow-hidden rounded-2xl border border-border bg-card/50 backdrop-blur-sm">
                 <Table>
                     <TableHeader>
-                        <TableRow className="border-border hover:bg-transparent">
-                            <TableHead className="w-1/3 text-lg font-semibold">Plan</TableHead>
-                            <TableHead className="text-center text-lg font-semibold">
+                        <TableRow className="border-border hover:bg-transparent text-muted-foreground">
+                            <TableHead className="w-1/3 text-lg font-semibold py-6">Plan</TableHead>
+                            <TableHead className="text-center text-lg font-semibold py-6">
                                 <div className="flex items-center justify-center gap-2">
-                                    <Building2 className="h-5 w-5 text-primary" />
+                                    <Building2 className="h-5 w-5 text-[#00E5FF]" />
                                     Employers
                                 </div>
                             </TableHead>
-                            <TableHead className="text-center text-lg font-semibold">
+                            <TableHead className="text-center text-lg font-semibold py-6">
                                 <div className="flex items-center justify-center gap-2">
-                                    <User className="h-5 w-5 text-accent" />
+                                    <User className="h-5 w-5 text-[#FFB300]" />
                                     Job Seekers
                                 </div>
                             </TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        <TableRow className="border-border">
-                            <TableCell className="font-medium">Monthly Subscription</TableCell>
-                            <TableCell className="text-center">
+                        <TableRow className="border-border py-4">
+                            <TableCell className="font-medium py-8">Monthly Subscription</TableCell>
+                            <TableCell className="text-center py-8">
                                 <div className="flex items-center justify-center gap-1">
-                                    <IndianRupee className="h-4 w-4" />
-                                    <span className="text-2xl font-bold">1,000</span>
-                                    <span className="text-muted-foreground">/month</span>
+                                    <span className="text-2xl font-bold">₹ 1,000</span>
+                                    <span className="text-muted-foreground ml-1">/month</span>
                                 </div>
                             </TableCell>
-                            <TableCell className="text-center">
+                            <TableCell className="text-center py-8">
                                 <div className="flex items-center justify-center gap-1">
-                                    <IndianRupee className="h-4 w-4" />
-                                    <span className="text-2xl font-bold">1,000</span>
-                                    <span className="text-muted-foreground">/month</span>
+                                    <span className="text-2xl font-bold">₹ 1,000</span>
+                                    <span className="text-muted-foreground ml-1">/month</span>
                                 </div>
                             </TableCell>
                         </TableRow>
-                        <TableRow className="border-border">
-                            <TableCell className="font-medium">Per Job Listing</TableCell>
-                            <TableCell className="text-center">
+                        <TableRow className="border-border py-4">
+                            <TableCell className="font-medium py-8">Per Job Listing</TableCell>
+                            <TableCell className="text-center py-8">
                                 <div className="flex items-center justify-center gap-1">
-                                    <IndianRupee className="h-4 w-4" />
-                                    <span className="text-2xl font-bold">100</span>
-                                    <span className="text-muted-foreground">/listing</span>
+                                    <span className="text-2xl font-bold">₹ 100</span>
+                                    <span className="text-muted-foreground ml-1">/listing</span>
                                 </div>
                             </TableCell>
-                            <TableCell className="text-center text-muted-foreground">
+                            <TableCell className="text-center text-muted-foreground py-8 font-medium">
                                 Not applicable
                             </TableCell>
                         </TableRow>
-                        <TableRow className="border-border">
-                            <TableCell className="font-medium">Total Monthly Cost</TableCell>
-                            <TableCell className="text-center">
+                        <TableRow className="border-transparent py-4 bg-primary/5">
+                            <TableCell className="font-medium py-8">Total Monthly Cost</TableCell>
+                            <TableCell className="text-center py-8">
                                 <div className="text-sm text-muted-foreground">
                                     ₹1,000 + ₹100 × (number of listings)
                                 </div>
                             </TableCell>
-                            <TableCell className="text-center">
+                            <TableCell className="text-center py-8">
                                 <div className="text-sm text-muted-foreground">
                                     ₹1,000 flat rate
                                 </div>
