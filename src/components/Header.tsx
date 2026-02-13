@@ -31,7 +31,7 @@ const Header = () => {
                         <Zap className="h-4 w-4 text-primary-foreground" />
                     </div>
                     <span className="text-lg font-bold tracking-tight">
-                        Iso<span className="text-destructive-foreground">tope</span>
+                        Isotope<span className="text-destructive-foreground">tope</span>
                     </span>
                 </Link>
 
