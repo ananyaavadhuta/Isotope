@@ -200,15 +200,21 @@ const Profile = () => {
 
                                     // Proactively update in DB
                                     if (user) {
-                                        const { error } = await supabase
+                                        // Update database
+                                        const { error: dbError } = await supabase
                                             .from("profiles")
                                             .update({ role: newRole } as any)
                                             .eq("id", user.id);
 
-                                        if (error) {
+                                        // Update auth metadata so header sees it
+                                        const { error: authError } = await supabase.auth.updateUser({
+                                            data: { role: newRole }
+                                        });
+
+                                        if (dbError || authError) {
                                             toast({
                                                 title: "Error switching role",
-                                                description: error.message,
+                                                description: (dbError || authError)?.message,
                                                 variant: "destructive"
                                             });
                                         } else {

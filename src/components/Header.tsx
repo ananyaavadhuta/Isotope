@@ -1,25 +1,58 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { Zap, User, LayoutDashboard, Building2, Search, IndianRupee, Megaphone } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Zap, User, LayoutDashboard, Building2, Search, IndianRupee, Megaphone, Plus, LogOut, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Header = () => {
     const location = useLocation();
+    const navigate = useNavigate();
     const [user, setUser] = useState<SupabaseUser | null>(null);
+    const [dbRole, setDbRole] = useState<string | null>(null);
+    const [fullName, setFullName] = useState<string | null>(null);
 
     useEffect(() => {
+        const fetchProfile = async (userId: string) => {
+            const { data } = await supabase
+                .from("profiles")
+                .select("role, full_name")
+                .eq("id", userId)
+                .single();
+            if (data) {
+                setDbRole((data as any).role);
+                setFullName((data as any).full_name);
+            }
+        };
+
         const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-            setUser(session?.user ?? null);
+            const u = session?.user ?? null;
+            setUser(u);
+            if (u) fetchProfile(u.id);
+            else setDbRole(null);
         });
 
         supabase.auth.getSession().then(({ data: { session } }) => {
-            setUser(session?.user ?? null);
+            const u = session?.user ?? null;
+            setUser(u);
+            if (u) fetchProfile(u.id);
         });
 
         return () => subscription.unsubscribe();
     }, []);
+
+    const handleSignOut = async () => {
+        await supabase.auth.signOut();
+        navigate("/");
+    };
 
     const isActive = (path: string) => location.pathname === path;
 
@@ -36,18 +69,23 @@ const Header = () => {
                 </Link>
 
                 <nav className="flex items-center gap-1">
-                    <Link to="/for-employers">
-                        <Button variant={isActive("/for-employers") ? "secondary" : "ghost"} size="sm" className="gap-2 text-sm">
-                            <Building2 className="h-4 w-4" />
-                            For Employers
-                        </Button>
-                    </Link>
-                    <Link to="/for-job-seekers">
-                        <Button variant={isActive("/for-job-seekers") ? "secondary" : "ghost"} size="sm" className="gap-2 text-sm">
-                            <Search className="h-4 w-4" />
-                            For Job Seekers
-                        </Button>
-                    </Link>
+                    {!user && (
+                        <>
+                            <Link to="/for-employers">
+                                <Button variant={isActive("/for-employers") ? "secondary" : "ghost"} size="sm" className="gap-2 text-sm">
+                                    <Building2 className="h-4 w-4" />
+                                    For Employers
+                                </Button>
+                            </Link>
+                            <Link to="/for-job-seekers">
+                                <Button variant={isActive("/for-job-seekers") ? "secondary" : "ghost"} size="sm" className="gap-2 text-sm">
+                                    <Search className="h-4 w-4" />
+                                    For Job Seekers
+                                </Button>
+                            </Link>
+                        </>
+                    )}
+
                     <Link to="/pricing">
                         <Button variant={isActive("/pricing") ? "secondary" : "ghost"} size="sm" className="gap-2 text-sm">
                             <IndianRupee className="h-4 w-4" />
@@ -60,20 +98,74 @@ const Header = () => {
                             Ambassadors
                         </Button>
                     </Link>
-                    {user && (
-                        <Link to="/matchmaking">
-                            <Button variant={isActive("/matchmaking") ? "secondary" : "ghost"} size="sm" className="gap-2 text-sm">
-                                <LayoutDashboard className="h-4 w-4" />
-                                Matchmaking
+
+                    {user ? (
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant={isActive("/profile") ? "secondary" : "ghost"} size="sm" className="gap-2 ml-2 glow-primary/10">
+                                    <User className="h-4 w-4" />
+                                    <span className="hidden sm:inline">
+                                        {fullName || "My Isotope"}
+                                    </span>
+                                    <ChevronDown className="h-3 w-3 opacity-50" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-56 mt-2">
+                                <DropdownMenuLabel>
+                                    <div className="flex flex-col space-y-1">
+                                        <p className="text-sm font-medium leading-none">
+                                            {fullName || "Dashboard"}
+                                        </p>
+                                        <p className="text-xs leading-none text-muted-foreground">
+                                            {user.email}
+                                        </p>
+                                    </div>
+                                </DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem asChild>
+                                    <Link to="/matchmaking" className="cursor-pointer flex items-center">
+                                        <LayoutDashboard className="mr-2 h-4 w-4" />
+                                        <span>Matchmaking</span>
+                                    </Link>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem asChild>
+                                    <Link to="/jobs" className="cursor-pointer flex items-center">
+                                        <Search className="mr-2 h-4 w-4" />
+                                        <span>Find Jobs</span>
+                                    </Link>
+                                </DropdownMenuItem>
+
+                                {dbRole === "employer" && (
+                                    <DropdownMenuItem asChild>
+                                        <Link to="/post-job" className="cursor-pointer flex items-center text-accent">
+                                            <Plus className="mr-2 h-4 w-4" />
+                                            <span>Post a Job</span>
+                                        </Link>
+                                    </DropdownMenuItem>
+                                )}
+
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem asChild>
+                                    <Link to="/profile" className="cursor-pointer flex items-center">
+                                        <User className="mr-2 h-4 w-4" />
+                                        <span>Profile Settings</span>
+                                    </Link>
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-destructive focus:text-destructive">
+                                    <LogOut className="mr-2 h-4 w-4" />
+                                    <span>Sign Out</span>
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    ) : (
+                        <Link to="/auth">
+                            <Button variant={isActive("/auth") ? "secondary" : "ghost"} size="sm" className="gap-2 text-sm ml-2">
+                                <User className="h-4 w-4" />
+                                Account
                             </Button>
                         </Link>
                     )}
-                    <Link to={user ? "/profile" : "/auth"}>
-                        <Button variant={isActive("/auth") || isActive("/profile") ? "secondary" : "ghost"} size="sm" className="gap-2 text-sm">
-                            <User className="h-4 w-4" />
-                            {user ? "Profile" : "Account"}
-                        </Button>
-                    </Link>
                 </nav>
             </div>
         </header>
