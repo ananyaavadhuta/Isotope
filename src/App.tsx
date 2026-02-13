@@ -13,8 +13,10 @@ import ForJobSeekers from "./pages/ForJobSeekers";
 import ForAmbassadors from "./pages/ForAmbassadors";
 import Pricing from "./pages/Pricing";
 import Profile from "./pages/Profile";
+import Payment from "./pages/Payment";
 import PostJob from "./pages/PostJob";
 import NotFound from "./pages/NotFound";
+import SubscriptionGuard from "./components/SubscriptionGuard";
 
 const queryClient = new QueryClient();
 
@@ -28,13 +30,14 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
-            <Route path="/matchmaking" element={<Matchmaking />} />
+            <Route path="/matchmaking" element={<SubscriptionGuard><Matchmaking /></SubscriptionGuard>} />
             <Route path="/jobs" element={<Jobs />} />
-            <Route path="/post-job" element={<PostJob />} />
+            <Route path="/post-job" element={<SubscriptionGuard><PostJob /></SubscriptionGuard>} />
             <Route path="/for-employers" element={<ForEmployers />} />
             <Route path="/for-job-seekers" element={<ForJobSeekers />} />
             <Route path="/for-ambassadors" element={<ForAmbassadors />} />
             <Route path="/pricing" element={<Pricing />} />
+            <Route path="/payment" element={<Payment />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

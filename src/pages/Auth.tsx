@@ -40,27 +40,10 @@ const Auth = () => {
     }, [navigate]);
 
     const handleGoogleSignIn = async () => {
-        setLoading(true);
-        try {
-            const { error } = await lovable.auth.signInWithOAuth("google", {
-                redirect_uri: window.location.origin,
-            });
-            if (error) {
-                toast({
-                    title: "Sign in failed",
-                    description: error.message,
-                    variant: "destructive"
-                });
-            }
-        } catch (error) {
-            toast({
-                title: "Sign in failed",
-                description: "An unexpected error occurred",
-                variant: "destructive"
-            });
-        } finally {
-            setLoading(false);
-        }
+        toast({
+            title: "Coming Soon",
+            description: "Google Sign-In is currently in development. Please use email and password for now.",
+        });
     };
 
     const handleEmailSignUp = async () => {

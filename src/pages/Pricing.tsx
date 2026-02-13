@@ -1,5 +1,5 @@
 import { Check, IndianRupee, Zap, Building2, User, ArrowRight, Star, Shield, TrendingUp } from "lucide-react";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Header from "@/components/Header";
 import GradientBackground from "@/components/GradientBackground";
@@ -7,6 +7,8 @@ import IronFilingsEffect from "@/components/IronFilingsEffect";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import type { User as SupabaseUser } from "@supabase/supabase-js";
 
 const employerFeatures = ["Unlimited candidate matching", "AI-powered compatibility scores", "Direct messaging with candidates", "Analytics dashboard", "Priority support", "Featured company listing", "Access to premium talent pool", "Interview scheduling tools"];
 const seekerFeatures = ["AI-powered job recommendations", "Unlimited job applications", "Profile visibility boost", "Work style analysis", "Resume review feedback", "Interview preparation resources", "Salary benchmarking data", "Priority application status"];
@@ -29,6 +31,20 @@ const valueProps = [{
 }];
 
 const Pricing = () => {
+    const navigate = useNavigate();
+    const { toast } = useToast();
+    const [user, setUser] = useState<SupabaseUser | null>(null);
+
+    useEffect(() => {
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            setUser(session?.user ?? null);
+        });
+    }, []);
+
+    const handlePlanSelection = (planName: string, price: string) => {
+        navigate(`/payment?plan=${encodeURIComponent(planName)}&price=${encodeURIComponent(price)}`);
+    };
+
     return <div className="relative min-h-screen bg-background">
         <GradientBackground />
         <IronFilingsEffect />
@@ -133,12 +149,19 @@ const Pricing = () => {
                             <span className="text-muted-foreground">{feature}</span>
                         </li>)}
                     </ul>
-                    <Link to="/auth" className="mt-8 block">
-                        <Button className="w-full gap-2 glow-primary">
-                            Get Started as Employer
+                    {user ? (
+                        <Button className="mt-8 w-full gap-2 glow-primary" onClick={() => handlePlanSelection("Employer Plan", "1,000")}>
+                            Get Employer Plan
                             <ArrowRight className="h-4 w-4" />
                         </Button>
-                    </Link>
+                    ) : (
+                        <Link to="/auth" className="mt-8 block">
+                            <Button className="w-full gap-2 glow-primary">
+                                Get Started as Employer
+                                <ArrowRight className="h-4 w-4" />
+                            </Button>
+                        </Link>
+                    )}
                 </div>
 
                 {/* Seeker Features */}
@@ -158,12 +181,19 @@ const Pricing = () => {
                             <span className="text-muted-foreground">{feature}</span>
                         </li>)}
                     </ul>
-                    <Link to="/auth" className="mt-8 block">
-                        <Button variant="outline" className="w-full gap-2">
-                            Get Started as Job Seeker
+                    {user ? (
+                        <Button variant="outline" className="mt-8 w-full gap-2" onClick={() => handlePlanSelection("Job Seeker Plan", "1,000")}>
+                            Get Seeker Plan
                             <ArrowRight className="h-4 w-4" />
                         </Button>
-                    </Link>
+                    ) : (
+                        <Link to="/auth" className="mt-8 block">
+                            <Button variant="outline" className="w-full gap-2">
+                                Get Started as Job Seeker
+                                <ArrowRight className="h-4 w-4" />
+                            </Button>
+                        </Link>
+                    )}
                 </div>
             </div>
 
@@ -220,14 +250,17 @@ const Pricing = () => {
                 <p className="mx-auto mb-8 max-w-xl text-muted-foreground">
                     Join Isotope today and take the first step towards meaningful career connections.
                 </p>
-                <Link to="/auth">
-                    <Button size="lg" className="gap-2 glow-primary">
-                        Create Your Account
-                        <ArrowRight className="h-4 w-4" />
-                    </Button>
-                </Link>
+                {!user && (
+                    <Link to="/auth">
+                        <Button size="lg" className="gap-2 glow-primary">
+                            Create Your Account
+                            <ArrowRight className="h-4 w-4" />
+                        </Button>
+                    </Link>
+                )}
             </div>
         </div>
     </div>;
 };
+
 export default Pricing;
