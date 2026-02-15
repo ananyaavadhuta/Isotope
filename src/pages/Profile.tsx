@@ -13,6 +13,7 @@ import MouseFollowLight from "@/components/MouseFollowLight";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
+import VideoResumeRecorder from "@/components/VideoResumeRecorder";
 
 const Profile = () => {
     const navigate = useNavigate();
@@ -31,6 +32,7 @@ const Profile = () => {
     const [avatarUrl, setAvatarUrl] = useState("");
     const [companyName, setCompanyName] = useState("");
     const [industry, setIndustry] = useState("");
+    const [videoResumeUrl, setVideoResumeUrl] = useState<string | null>(null);
 
     const [role, setRole] = useState<"seeker" | "employer">("seeker");
 
@@ -63,6 +65,7 @@ const Profile = () => {
                 setExperience(p.experience || "");
                 setCompanyName(p.company_name || "");
                 setIndustry(p.industry || "");
+                setVideoResumeUrl(p.video_resume_url || null);
             } else {
                 // Fallback to metadata if profile doesn't exist yet
                 setFullName(session.user.user_metadata?.full_name || "");
@@ -343,6 +346,17 @@ const Profile = () => {
                                     onChange={(e) => setExperience(e.target.value)}
                                     placeholder="Describe your work experience, internships, or projects..."
                                     className="mt-1.5 min-h-[100px] bg-muted/50"
+                                />
+                            </div>
+
+                            {/* Video Resume Section */}
+                            <div>
+                                <Label className="text-muted-foreground mb-2 block">
+                                    Video Resume
+                                </Label>
+                                <VideoResumeRecorder
+                                    currentVideoUrl={videoResumeUrl}
+                                    onVideoSaved={(url) => setVideoResumeUrl(url)}
                                 />
                             </div>
                         </>

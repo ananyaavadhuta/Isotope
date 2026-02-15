@@ -16,6 +16,7 @@ import Profile from "./pages/Profile";
 import Payment from "./pages/Payment";
 import PostJob from "./pages/PostJob";
 import NotFound from "./pages/NotFound";
+import ResumeImprover from "./pages/ResumeImprover";
 import SubscriptionGuard from "./components/SubscriptionGuard";
 
 const queryClient = new QueryClient();
@@ -39,6 +40,7 @@ const App = () => (
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/payment" element={<Payment />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/resume-improver" element={<SubscriptionGuard><ResumeImprover /></SubscriptionGuard>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

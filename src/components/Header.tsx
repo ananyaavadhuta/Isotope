@@ -129,6 +129,12 @@ const Header = () => {
                                     </Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem asChild>
+                                    <Link to="/resume-improver" className="cursor-pointer flex items-center">
+                                        <Zap className="mr-2 h-4 w-4 text-purple-500" />
+                                        <span>Resume AI Tool</span>
+                                    </Link>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem asChild>
                                     <Link to="/jobs" className="cursor-pointer flex items-center">
                                         <Search className="mr-2 h-4 w-4" />
                                         <span>Find Jobs</span>
